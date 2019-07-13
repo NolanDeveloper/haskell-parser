@@ -1,0 +1,235 @@
+#define DEFINITIONS     "(?(DEFINE)"\
+    "(?<UNI_SMALL>\\p{Ll})"\
+    "(?<ASC_SMALL>[a-z])"\
+    "(?<SMALL>((?&ASC_SMALL)|(?&UNI_SMALL)|_))"\
+    "(?<UNI_LARGE>\\p{Lu})"\
+    "(?<ASC_LARGE>[A-Z])"\
+    "(?<LARGE>((?&ASC_LARGE)|(?&UNI_LARGE)))"\
+    "(?<UNI_DIGIT>\\p{Nd})"\
+    "(?<ASC_DIGIT>[0-9])"\
+    "(?<DIGIT>((?&ASC_DIGIT)|(?&UNI_DIGIT)))"\
+    "(?<OCTIT>[0-7])"\
+    "(?<HEXIT>((?&DIGIT)|[A-Fa-f]))"\
+    "(?<DECIMAL>(?&DIGIT)+)"\
+    "(?<OCTAL>(?&OCTIT)+)"\
+    "(?<HEXADECIMAL>(?&HEXIT)+)"\
+    "(?<ASC_SYMBOL>(!|#|\\$|%|&|\\*|\\+|\\.|\\/|<|=|>|\\?|@|\\\\|\\^|\\||-|~|:))"\
+    "(?<ASC_SYMBOL_NO_BACKSLASH>(!|#|\\$|%|&|\\*|\\+|\\.|\\/|<|=|>|\\?|@|\\^|\\||-|~|:))"\
+    "(?<ASC_SYMBOL_NO_COLON>(!|#|\\$|%|&|\\*|\\+|\\.|\\/|<|=|>|\\?|@|\\\\|\\^|\\||-|~))"\
+    "(?<ASC_SYMBOL_NO_MINUS>(!|#|\\$|%|&|\\*|\\+|\\.|\\/|<|=|>|\\?|@|\\\\|\\^|\\|~|:))"\
+    "(?<UNI_SYMBOL>(\\p{S}|\\p{P}))"\
+    "(?<UNI_SYMBOL_NO_COLON>[^:\\P{S}\\P{P}])"\
+    "(?<UNI_SYMBOL_NO_BACKSLASH>[^\\\\\\P{S}\\P{P}])"\
+    "(?<UNI_SYMBOL_NO_MINUS>[^-\\P{S}\\P{P}])"\
+    "(?<SYMBOL>((?&ASC_SYMBOL)|(?&UNI_SYMBOL)))"\
+    "(?<SYMBOL_NO_BACKSLASH>((?&ASC_SYMBOL_NO_BACKSLASH)|(?&UNI_SYMBOL_NO_BACKSLASH)))"\
+    "(?<SYMBOL_NO_COLON>((?&ASC_SYMBOL_NO_COLON)|(?&UNI_SYMBOL_NO_COLON)))"\
+    "(?<SYMBOL_NO_MINUS>((?&ASC_SYMBOL_NO_MINUS)|(?&UNI_SYMBOL_NO_MINUS)))"\
+    "(?<VARID>((?&SMALL)((?&SMALL)|(?&LARGE)|(?&DIGIT)|')*))"\
+    "(?<CONID>((?&LARGE)((?&SMALL)|(?&LARGE)|(?&DIGIT)|')*))"\
+    "(?<VARSYM>((?&SYMBOL_NO_COLON)(?&SYMBOL)*))"\
+    "(?<CONSYM>(:(?&SYMBOL)(?&SYMBOL)*))"\
+    "(?<SPECIAL>(\\(|\\)|,|;|\\[|\\]|`|\\{|\\}))"\
+    "(?<SPECIAL_NO_BRACES>(\\(|\\)|,|;|\\[|\\]|`))"\
+    "(?<GRAPHIC>((?&SMALL)|(?&LARGE)|(?&SYMBOL)|(?&DIGIT)|(?&SPECIAL)|\"|'))"\
+    "(?<GRAPHIC_NO_BACKSLASH_AND_PRIME>((?&SMALL)|(?&LARGE)|(?&SYMBOL_NO_BACKSLASH)|(?&DIGIT)|(?&SPECIAL)|\"))"\
+    "(?<GRAPHIC_NO_BACKSLASH_AND_QUOTE>((?&SMALL)|(?&LARGE)|(?&SYMBOL_NO_BACKSLASH)|(?&DIGIT)|(?&SPECIAL)|'))"\
+    "(?<GRAPHIC_NO_SYMBOL>((?&SMALL)|(?&LARGE)|(?&DIGIT)|(?&SPECIAL)|\"|'))"\
+    "(?<GRAPHIC_NO_BRACES_AND_MINUS>((?&SMALL)|(?&LARGE)|(?&SYMBOL_NO_MINUS)|(?&DIGIT)|(?&SPECIAL_NO_BRACES)|\"|'))"\
+    "(?<CHARESC>(a|b|f|n|r|t|v|\\\\|\"|'|&))"\
+    "(?<CHARESC_NO_AMPERSAND>(a|b|f|n|r|t|v|\\\\|\"|'))"\
+    "(?<CNTRL>((?&ASC_LARGE)|@|\\[|\\\\|\\]|\\^|_))"\
+    "(?<ASCII>(\\^(?&CNTRL)|NUL|SOH|STX|ETX|EOT|ENQ|ACK|BEL|BS|HT|LF|VT|FF|CR|SO|SI|DLE|DC1|DC2|DC3|DC4|NAK|SYN|ETB|CAN|EM|SUB|ESC|FS|GS|RS|US|SP|DEL))"\
+    "(?<ESCAPE>(\\\\((?&CHARESC)|(?&ASCII)|(?&DECIMAL)|o(?&OCTAL)|x(?&HEXADECIMAL))))"\
+    "(?<ESCAPE_NO_AMPERSAND>(\\\\((?&CHARESC_NO_AMPERSAND)|(?&ASCII)|(?&DECIMAL)|o(?&OCTAL)|x(?&HEXADECIMAL))))"\
+    "(?<CHAR>('((?&GRAPHIC_NO_BACKSLASH_AND_PRIME)| |(?&ESCAPE_NO_AMPERSAND))'))"\
+    "(?<WHITECHAR>(\\n|\\v| |\\t|\\p{Z}))"\
+    "(?<GAP>(\\\\(?&WHITECHAR)+\\\\))"\
+    "(?<STRING>(\"((?&GRAPHIC_NO_BACKSLASH_AND_QUOTE)| |(?&ESCAPE)|(?&GAP))*\"))"\
+    "(?<EXPONENT>((e|E)[+|-](?&DECIMAL)))"\
+    "(?<FLOAT>((?&DECIMAL).(?&DECIMAL)(?&EXPONENT)?|(?&DECIMAL)(?&EXPONENT)))"\
+    "(?<INTEGER>((?&DECIMAL)|0o(?&OCTAL)|0O(?&OCTAL)|0x(?&HEXADECIMAL)|0X(?&HEXADECIMAL)))"\
+    "(?<DASHES>(--(-)*))"\
+    "(?<ANY>((?&GRAPHIC)|(?&WHITECHAR)))"\
+    "(?<ANY_NO_SYMBOL>((?&GRAPHIC_NO_SYMBOL)|(?&WHITECHAR)))"\
+    "(?<ANY_NO_BRACES_AND_MINUS>((?&GRAPHIC_NO_BRACES_AND_MINUS)|(?&WHITECHAR)))"\
+    "(?<ANY_SEQ>((?&ANY_NO_BRACES_AND_MINUS)|-(?!\\})|\\{(?!-)))"\
+    "(?<NEWLINE>(\\r\\n|\\r|\\n|\\f))"\
+    "(?<COMMENT>((?&DASHES)((?&ANY_NO_SYMBOL)(?&ANY)*)?(?&NEWLINE)))"\
+    "(?<NCOMMENT>\\{-" "(?&ANY_SEQ)" "*((?&NCOMMENT)" "(?&ANY_SEQ)" "*)?-\\})"\
+    ")"
+
+DEF_LEXEME(LEX_AT_SIGN,                "@")
+LEXEME_EXAMPLE(LEX_AT_SIGN,            "@")
+
+DEF_LEXEME(LEX_BACKSLASH,              "\\\\")
+LEXEME_EXAMPLE(LEX_BACKSLASH,          "\\")
+
+DEF_LEXEME(LEX_CASE,                   "case")
+LEXEME_EXAMPLE(LEX_CASE,               "case")
+
+DEF_LEXEME(LEX_CLASS,                  "class")
+LEXEME_EXAMPLE(LEX_CLASS,              "class")
+
+DEF_LEXEME(LEX_COMMA,                  ",")
+LEXEME_EXAMPLE(LEX_COMMA,              ",")
+
+DEF_LEXEME(LEX_DATA,                   "data")
+LEXEME_EXAMPLE(LEX_DATA,               "data")
+
+DEF_LEXEME(LEX_DEFAULT,                "default")
+LEXEME_EXAMPLE(LEX_DEFAULT,            "default")
+
+DEF_LEXEME(LEX_DERIVING,               "deriving")
+LEXEME_EXAMPLE(LEX_DERIVING,           "deriving")
+
+DEF_LEXEME(LEX_DO,                     "do")
+LEXEME_EXAMPLE(LEX_DO,                 "do")
+
+DEF_LEXEME(LEX_ELSE,                   "else")
+LEXEME_EXAMPLE(LEX_ELSE,               "else")
+
+DEF_LEXEME(LEX_FOREIGN,                "foreign")
+LEXEME_EXAMPLE(LEX_FOREIGN,            "foreign")
+
+DEF_LEXEME(LEX_GRAVE_ACCENT,           "`")
+LEXEME_EXAMPLE(LEX_GRAVE_ACCENT,       "`")
+
+DEF_LEXEME(LEX_IF,                     "if")
+LEXEME_EXAMPLE(LEX_IF,                 "if")
+
+DEF_LEXEME(LEX_IMPORT,                 "import")
+LEXEME_EXAMPLE(LEX_IMPORT,             "import")
+
+DEF_LEXEME(LEX_INFIXL,                 "infixl")
+LEXEME_EXAMPLE(LEX_INFIXL,             "infixl")
+
+DEF_LEXEME(LEX_INFIXR,                 "infixr")
+LEXEME_EXAMPLE(LEX_INFIXR,             "infixr")
+
+DEF_LEXEME(LEX_INFIX,                  "infix")
+LEXEME_EXAMPLE(LEX_INFIX,              "infix")
+
+DEF_LEXEME(LEX_INSTANCE,               "instance")
+LEXEME_EXAMPLE(LEX_INSTANCE,           "instance")
+
+DEF_LEXEME(LEX_IN,                     "in")
+LEXEME_EXAMPLE(LEX_IN,                 "in")
+
+DEF_LEXEME(LEX_LEFT_ARROW,             "<-")
+LEXEME_EXAMPLE(LEX_LEFT_ARROW,         "<-")
+
+DEF_LEXEME(LEX_NCOMMENT,               "(?&NCOMMENT)")
+LEXEME_EXAMPLE(LEX_NCOMMENT,           "{- -}")
+LEXEME_EXAMPLE(LEX_NCOMMENT,           "{- multiline comment in one line -}")
+LEXEME_EXAMPLE(LEX_NCOMMENT,           "{- multiline\ncomment -}")
+
+DEF_LEXEME(LEX_LEFT_BRACE,             "\\{")
+LEXEME_EXAMPLE(LEX_LEFT_BRACE,         "{")
+LEXEME_EXAMPLE(LEX_LEFT_BRACE,         "{- not comment {- with nested  comment -}")
+
+DEF_LEXEME(LEX_LEFT_BRACKET,           "\\[")
+LEXEME_EXAMPLE(LEX_LEFT_BRACKET,       "[")
+
+DEF_LEXEME(LEX_LEFT_PARENTHESIS,       "\\(")
+LEXEME_EXAMPLE(LEX_LEFT_PARENTHESIS,   "(")
+
+DEF_LEXEME(LEX_LET,                    "let")
+LEXEME_EXAMPLE(LEX_LET,                "let")
+
+DEF_LEXEME(LEX_MODULE,                 "module")
+LEXEME_EXAMPLE(LEX_MODULE,             "module")
+
+DEF_LEXEME(LEX_NEWTYPE,                "newtype")
+LEXEME_EXAMPLE(LEX_NEWTYPE,            "newtype")
+
+DEF_LEXEME(LEX_OF,                     "of")
+LEXEME_EXAMPLE(LEX_OF,                 "of")
+
+DEF_LEXEME(LEX_RIGHT_ARROW,            "->")
+LEXEME_EXAMPLE(LEX_RIGHT_ARROW,        "->")
+
+DEF_LEXEME(LEX_RIGHT_BRACE,            "\\}")
+LEXEME_EXAMPLE(LEX_RIGHT_BRACE,        "}")
+
+DEF_LEXEME(LEX_RIGHT_BRACKET,          "\\]")
+LEXEME_EXAMPLE(LEX_RIGHT_BRACKET,      "]")
+
+DEF_LEXEME(LEX_RIGHT_DOUBLE_ARROW,     "=>")
+LEXEME_EXAMPLE(LEX_RIGHT_DOUBLE_ARROW, "=>")
+
+DEF_LEXEME(LEX_EQUALS_SIGN,            "=")
+LEXEME_EXAMPLE(LEX_EQUALS_SIGN,        "=")
+
+DEF_LEXEME(LEX_RIGHT_PARENTHESIS,      "\\)")
+LEXEME_EXAMPLE(LEX_RIGHT_PARENTHESIS,  ")")
+
+DEF_LEXEME(LEX_SEMICOLON,              ";")
+LEXEME_EXAMPLE(LEX_SEMICOLON,          ";")
+
+DEF_LEXEME(LEX_THEN,                   "then")
+LEXEME_EXAMPLE(LEX_THEN,               "then")
+
+DEF_LEXEME(LEX_TILDE,                  "~")
+LEXEME_EXAMPLE(LEX_TILDE,              "~")
+
+DEF_LEXEME(LEX_TWO_COLON,              "::")
+LEXEME_EXAMPLE(LEX_TWO_COLON,          "::")
+
+DEF_LEXEME(LEX_TWO_DOT,                "\\.\\.")
+LEXEME_EXAMPLE(LEX_TWO_DOT,            "..")
+
+DEF_LEXEME(LEX_TYPE,                   "type")
+LEXEME_EXAMPLE(LEX_TYPE,               "type")
+
+DEF_LEXEME(LEX_UNDERSCORE,             "_")
+LEXEME_EXAMPLE(LEX_UNDERSCORE,         "_")
+DEF_LEXEME(LEX_VERTICAL_BAR,           "\\|")
+LEXEME_EXAMPLE(LEX_VERTICAL_BAR,       "|")
+
+DEF_LEXEME(LEX_WHERE,                  "where")
+LEXEME_EXAMPLE(LEX_WHERE,              "where")
+
+DEF_LEXEME(LEX_WHITECHAR,              "(?&WHITECHAR)")
+LEXEME_EXAMPLE(LEX_WHITECHAR,          " ")
+LEXEME_EXAMPLE(LEX_WHITECHAR,          "\n")
+LEXEME_EXAMPLE(LEX_WHITECHAR,          "\t")
+LEXEME_EXAMPLE(LEX_WHITECHAR,          "\v")
+LEXEME_EXAMPLE(LEX_WHITECHAR,          " ") // em space
+
+DEF_LEXEME(LEX_CHAR,                   "(?&CHAR)")
+LEXEME_EXAMPLE(LEX_CHAR,               "'6'")
+
+DEF_LEXEME(LEX_STRING,                 "(?&STRING)")
+LEXEME_EXAMPLE(LEX_STRING,             "\"\"")
+LEXEME_EXAMPLE(LEX_STRING,             "\" \"")
+LEXEME_EXAMPLE(LEX_STRING,             "\"\\\n\\\"")
+LEXEME_EXAMPLE(LEX_STRING,             "\"Hello, world!\"")
+LEXEME_EXAMPLE(LEX_STRING,             "\"Привет, мир!\"")
+
+DEF_LEXEME(LEX_VARIABLE_ID,            "(?&VARID)")
+LEXEME_EXAMPLE(LEX_VARIABLE_ID,        "varid")
+
+DEF_LEXEME(LEX_CONSTRUCTOR_ID,         "(?&CONID)")
+LEXEME_EXAMPLE(LEX_CONSTRUCTOR_ID,     "Conid")
+
+DEF_LEXEME(LEX_COMMENT,                "(?&COMMENT)")
+LEXEME_EXAMPLE(LEX_COMMENT,            "-- one-line comment\n")
+
+DEF_LEXEME(LEX_VARIABLE_SYMBOL,        "(?&VARSYM)")
+LEXEME_EXAMPLE(LEX_VARIABLE_SYMBOL,    "+")
+
+DEF_LEXEME(LEX_CONSTRUCTOR_SYMBOL,     "(?&CONSYM)")
+LEXEME_EXAMPLE(LEX_CONSTRUCTOR_SYMBOL, ":+")
+
+DEF_LEXEME(LEX_COLON,                  ":")
+LEXEME_EXAMPLE(LEX_COLON,              ":")
+
+DEF_LEXEME(LEX_FLOAT,                  "(?&FLOAT)")
+LEXEME_EXAMPLE(LEX_FLOAT,              "42.1")
+
+DEF_LEXEME(LEX_INTEGER,                "(?&INTEGER)")
+LEXEME_EXAMPLE(LEX_INTEGER,            "42")
+
+#undef DEF_LEXEME
+#undef LEXEME_EXAMPLE
