@@ -16,7 +16,7 @@
     "(?<ASC_SYMBOL>(!|#|\\$|%|&|\\*|\\+|\\.|\\/|<|=|>|\\?|@|\\\\|\\^|\\||-|~|:))"\
     "(?<ASC_SYMBOL_NO_BACKSLASH>(!|#|\\$|%|&|\\*|\\+|\\.|\\/|<|=|>|\\?|@|\\^|\\||-|~|:))"\
     "(?<ASC_SYMBOL_NO_COLON>(!|#|\\$|%|&|\\*|\\+|\\.|\\/|<|=|>|\\?|@|\\\\|\\^|\\||-|~))"\
-    "(?<ASC_SYMBOL_NO_MINUS>(!|#|\\$|%|&|\\*|\\+|\\.|\\/|<|=|>|\\?|@|\\\\|\\^|\\|~|:))"\
+    "(?<ASC_SYMBOL_NO_MINUS>(!|#|\\$|%|&|\\*|\\+|\\.|\\/|<|=|>|\\?|@|\\\\|\\^|\\||~|:))"\
     "(?<UNI_SYMBOL>(\\p{S}|\\p{P}))"\
     "(?<UNI_SYMBOL_NO_COLON>[^:\\P{S}\\P{P}])"\
     "(?<UNI_SYMBOL_NO_BACKSLASH>[^\\\\\\P{S}\\P{P}])"\
@@ -54,9 +54,11 @@
     "(?<ANY_NO_SYMBOL>((?&GRAPHIC_NO_SYMBOL)|(?&WHITECHAR)))"\
     "(?<ANY_NO_BRACES_AND_MINUS>((?&GRAPHIC_NO_BRACES_AND_MINUS)|(?&WHITECHAR)))"\
     "(?<ANY_SEQ>((?&ANY_NO_BRACES_AND_MINUS)|-(?!\\})|\\{(?!-)))"\
+    "(?<ANY_SMALL>((?&GRAPHIC)| |\\t))"\
+    "(?<ANY_SMALL_NO_SYMBOL>((?&GRAPHIC_NO_SYMBOL)| |\\t))"\
     "(?<NEWLINE>(\\r\\n|\\r|\\n|\\f))"\
-    "(?<COMMENT>((?&DASHES)((?&ANY_NO_SYMBOL)(?&ANY)*)?(?&NEWLINE)))"\
-    "(?<NCOMMENT>\\{-" "(?&ANY_SEQ)" "*((?&NCOMMENT)" "(?&ANY_SEQ)" "*)?-\\})"\
+    "(?<COMMENT>((?&DASHES)((?&ANY_SMALL_NO_SYMBOL)(?&ANY_SMALL)*)?(?&NEWLINE)))"\
+    "(?<NCOMMENT>\\{-(?&ANY_SEQ)*((?&NCOMMENT)(?&ANY_SEQ)*)?-\\})"\
     ")"
 
 DEF_LEXEME(LEX_AT_SIGN,                "@")

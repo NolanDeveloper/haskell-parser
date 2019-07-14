@@ -27,14 +27,18 @@ parser_new(struct Str * input) {
 #define DEF_LEXEME(name, pattern) pattern "(?C%d)" "|"
 #define LEXEME_EXAMPLE(name, example)
 #include "lexemes.def"
-            "" "(?C%d)"
+            "$" "(?C%d)"
             ")" DEFINITIONS,
 #define DEF_LEXEME(name, pattern) name,
 #define LEXEME_EXAMPLE(name, example)
 #include "lexemes.def"
             LEX_NULL
             );
-//    log_msg(LL_DEBUG, "pattern = \"%s\"", pattern->str);
+    static _Bool first_call = 1;
+    if (first_call) {
+        log_msg(LL_DEBUG, "pattern = \"%s\"", pattern->str);
+        first_call = 0;
+    }
     regex = pcre2_compile(
         (uint8_t *)pattern->str,        /* the pattern */
         PCRE2_ZERO_TERMINATED,          /* indicates pattern is zero‐terminated */
